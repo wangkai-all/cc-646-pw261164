@@ -1,0 +1,19 @@
+{
+  "name": "rental-maintenance-overlap",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "设备租用区间与保养区间重叠明细加工系统（左闭右开区间）",
+  "description_en": "Rental vs maintenance interval overlap detail engine with left-closed/right-open intervals",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test tests/*.test.mjs",
+    "reset": "rm -f data/app.db data/app.db-wal data/app.db-shm"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

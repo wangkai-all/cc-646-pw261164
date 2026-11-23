@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>设备租用 × 保养 重叠明细</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M3 7h10M3 17h18"/>
+        </svg>
+      </span>
+      <div>
+        <h1>设备租用 × 保养 重叠明细</h1>
+        <p class="sub">左闭右开区间 · 成对交集 · 并集切段 · 版本化发布</p>
+      </div>
+    </div>
+    <div class="window">
+      <label class="field inline">
+        <span>固定截止时刻</span>
+        <input id="asOf" type="text" inputmode="numeric" autocomplete="off" placeholder="2026-03-15 00:00">
+      </label>
+      <button id="btnQuery" class="primary">查询</button>
+      <button id="btnRebuild" class="ghost" title="按当前截止时刻重建全部设备并发布新版本">全量重建</button>
+      <span class="chip" id="versionChip">版本 —</span>
+    </div>
+  </header>
+
+  <section class="panel import-panel" id="importPanel">
+    <div class="panel-head">
+      <h2>导入与样本</h2>
+      <button class="ghost small" id="btnImportToggle" aria-expanded="true">收起</button>
+    </div>
+    <div class="panel-body" id="importBody">
+      <div class="grid-2">
+        <div>
+          <label class="field">
+            <span>CSV / 制表符文本 <em>设备编号, 记录编号, 开始时刻, 结束时刻, 类型(rental|maintenance)</em></span>
+            <textarea id="importText" rows="7" spellcheck="false">equipment_id,record_no,start,end,kind
+EQ-5001,R-5001,2026-03-01 00:00,2026-03-12 00:00,rental
+EQ-5001,M-5001,2026-03-02 00:00,2026-03-04 00:00,maintenance
+EQ-5001,M-5002,2026-03-03 00:00,2026-03-06 00:00,maintenance
+EQ-5001,M-5003,2026-03-09 00:00,2026-03-10 00:00,maintenance</textarea>
+          </label>
+          <div class="row gap">
+            <button id="btnImport" class="primary">导入并发布</button>
+            <button id="btnDryRun" class="ghost">预检</button>
+            <span class="hint">结束时刻留空 = 未结束，查询时按上方截止时刻封闭。</span>
+          </div>
+          <div id="importReport" class="report" hidden></div>
+        </div>
+        <div>
+          <p class="section-label">内置样本 <em>每步都会发布一个版本，可直接回看</em></p>
+          <div id="sampleList" class="sample-list"><p class="muted">载入中…</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kpis" id="kpis" aria-label="汇总指标"></section>
+
+  <section class="panel" id="resultPanel">
+    <div class="panel-head">
+      <h2>重叠明细</h2>
+      <div class="row gap tight">
+        <label class="toggle"><input type="checkbox" id="onlyGaps"> 只看有空档</label>
+        <label class="toggle"><input type="checkbox" id="onlyOverlap"> 只看有重叠</label>
+        <button class="ghost small" id="btnVerify">朴素扫描核对</button>
+      </div>
+    </div>
+    <div class="panel-body" id="resultBody">
+      <p class="empty">尚无已发布结果。导入数据或载入一个样本。</p>
+    </div>
+  </section>
+
+  <section class="panel" id="versionPanel">
+    <div class="panel-head">
+      <h2>版本与增量</h2>
+      <button class="ghost small" id="btnRefreshVersions">刷新</button>
+    </div>
+    <div class="panel-body" id="versionBody"><p class="empty">载入数据后显示每次发布的版本、截止时刻与重建范围。</p></div>
+  </section>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="drawer" id="drawer" hidden>
+  <div class="drawer-scrim" data-close></div>
+  <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <header>
+      <div>
+        <p class="eyebrow" id="drawerKind"></p>
+        <h3 id="drawerTitle"></h3>
+      </div>
+      <button class="icon-btn" data-close aria-label="关闭">×</button>
+    </header>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+</div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>
